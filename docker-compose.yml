@@ -47,3 +47,20 @@ services:
     volumes:
       - 'swag:/config/'
     restart: unless-stopped
+
+  datadog:
+    image: datadog/agent:latest
+    container_name: datadog
+    volumes:
+      - "datadog-agent:/conf.d:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/proc/:/host/proc/:ro"
+      - "/sys/fs/cgroup/:/host/sys/fs/cgroup/:ro"
+      - "/run/systemd/:/host/run/systemd/:ro"
+    environment:
+      - DD_API_KEY
+      - DD_HOSTNAME=lmpihole
+      - DD_APM_ENABLED=yes
+      - DD_PROCESS_AGENT_ENABLED=yes
+      - DD_PROCESS_AGENT_CONTAINER_SOURCE=docker
+    restart: always
