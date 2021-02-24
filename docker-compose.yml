@@ -5,45 +5,38 @@ volumes:
     driver: local
   dnsmasq:
     driver: local
-  swag:
-    driver: local
 
 services:
   pihole:
     container_name: pihole
+    hostname: pihole
     image: pihole/pihole:latest
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "67:67/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
     environment:
+      - ADMIN_EMAIL
       - TZ=Europe/Amsterdam
       - WEBPASSWORD
       - DNS1=127.0.0.1
-      - DNS2
+      - DNS2=1.1.1.1
+      - DNS_BOGUS_PRIV=true
+      - DNS_FQDN_REQUIRED=true
+      - REV_SERVER=true
+      - REV_SERVER_DOMAIN
+      - REV_SERVER_TARGET
+      - REV_SERVER_CIDR
+      - ServerIP
+      - VIRTUAL_HOST
+      - IPv6=false
+      - DNSMASQ_LISTENING=all
+      - DNSMASQ_USER=pihole
+      - TEMPERATUREUNIT=c
+      - WEBUIBOXEDLAYOUT=traditional
+      - SKIPGRAVITYONBOOT=1
     volumes:
       - 'config:/etc/pihole/'
       - 'dnsmasq:/etc/dnsmasq.d/'
-    restart: unless-stopped
-
-  swag:
-    image: linuxserver/swag
-    container_name: swag
-    ports:
-      - "443:443/tcp"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Amsterdam
-      - URL
-      - VALIDATION=dns
-      - DNSPLUGIN=route53
-      - EMAIL
-      - STAGING=false
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_REGION
-      - AWS_HOSTED_ZONE_ID
-    volumes:
-      - 'swag:/config/'
     restart: unless-stopped
