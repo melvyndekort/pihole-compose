@@ -11,11 +11,7 @@ services:
     container_name: pihole
     hostname: pihole
     image: pihole/pihole:latest
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "80:80/tcp"
-      - "443:443/tcp"
+    network_mode: host
     environment:
       - ADMIN_EMAIL
       - TZ=Europe/Amsterdam
